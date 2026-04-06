@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红色四川文旅智能体 - 低保真产品原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* 低保真风格：手绘感或极简线框 */
+        .lo-fi {
+            border: 2px solid #333;
+            border-radius: 4px;
+            background: white;
+            box-shadow: 4px 4px 0px #333;
+        }
+
+        .lo-fi-btn {
+            border: 2px solid #333;
+            background: #eee;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+
+        .lo-fi-btn:active {
+            box-shadow: 1px 1px 0px #333;
+            transform: translate(2px, 2px);
+        }
+
+        .lo-fi-input {
+            border: 2px solid #333;
+            padding: 4px;
+            width: 100%;
+        }
+
+        /* 手机模型样式 */
+        .phone-frame {
+            width: 375px;
+            height: 700px;
+            border: 12px solid #333;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            background: white;
+            margin: 0 auto;
+        }
+
+        /* 智能体灵动球 */
+        .agent-orb {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ff4d4d, #b30000);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            animation: breathe 3s infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+            50% { transform: translateX(-50%) scale(1.1); opacity: 1; }
+        }
+
+        .active-tab {
+            background-color: #333 !important;
+            color: white !important;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* 修复问答页面 flex 布局失效问题 */
+        #screen-chat.active {
+            display: flex;
+        }
+
+        .active-menu {
+            background-color: #333 !important;
+            color: white !important;
+        }
+
+        .backend-screen {
+            display: none;
+        }
+
+        .backend-screen.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- 顶层切换控制 -->
+    <div class="flex justify-center space-x-4 mb-8">
+        <button onclick="switchView('app')" id="btn-app" class="lo-fi-btn active-tab px-8 py-2 font-bold">APP 端 (普通用户)</button>
+        <button onclick="switchView('backend')" id="btn-backend" class="lo-fi-btn px-8 py-2 font-bold">运营后台 (管理员)</button>
+    </div>
+
+    <!-- ================= APP 端 原型 ================= -->
+    <div id="app-view" class="view">
+        <div class="phone-frame lo-fi relative">
+            <!-- 状态栏模拟 -->
+            <div class="h-6 bg-gray-100 flex justify-between px-6 items-center text-[10px]">
+                <span>12:00</span>
+                <span>四川观察 5G</span>
+            </div>
+
+            <!-- APP 首页模拟 -->
+            <div id="app-home" class="screen active p-4 h-full overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-bold text-lg">四川观察</span>
+                    <button onclick="gotoScreen('screen-history')" class="text-xs lo-fi-btn">我的记录</button>
+                </div>
+
+                <!-- 荣誉成就墙 (区分点位与活动) -->
+                <div class="lo-fi p-3 mb-6 bg-red-50">
+                    <div class="flex justify-between items-center mb-3 border-b border-red-200 pb-1">
+                        <span class="text-xs font-bold text-red-800">红色荣誉成就</span>
+                        <span class="text-[10px] text-gray-500" onclick="gotoScreen('screen-history')">足迹档案 ></span>
+                    </div>
+                    
+                    <!-- 成就勋章 (活动维度 - 复合成就) -->
+                    <div class="mb-4">
+                        <div class="text-[9px] text-gray-400 mb-2">● 活动挑战勋章</div>
+                        <div class="flex space-x-4 overflow-x-auto pb-1">
+                            <div class="flex-shrink-0 flex flex-col items-center cursor-pointer" onclick="showMedalDetail('飞夺先锋', '🎖️', '2026-04-06', '在泸定桥骑行挑战中表现卓越，完美复刻红军飞夺铁索桥的神速。')">
+                                <div class="w-12 h-12 lo-fi rounded-full bg-yellow-400 flex items-center justify-center text-xl shadow-md border-2 border-white">🎖️</div>
+                                <span class="text-[8px] mt-1 font-bold text-red-800">飞夺先锋</span>
+                            </div>
+                            <div class="flex-shrink-0 flex flex-col items-center opacity-30 grayscale cursor-pointer" onclick="showMedalDetail('翻越雪山', '🏅', '尚未获得', '完成夹金山徒步挑战即可解锁。')">
+                                <div class="w-12 h-12 lo-fi rounded-full bg-gray-200 flex items-center justify-center text-xl">🏅</div>
+                                <span class="text-[8px] mt-1">翻越雪山</span>
+                            </div>
+                            <div class="flex-shrink-0 flex flex-col items-center opacity-30 grayscale cursor-pointer" onclick="showMedalDetail('脱贫见证', '🏆', '尚未获得', '探访大凉山脱贫攻坚路线即可解锁。')">
+                                <div class="w-12 h-12 lo-fi rounded-full bg-gray-200 flex items-center justify-center text-xl">🏆</div>
+                                <span class="text-[8px] mt-1">脱贫见证</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 足迹点位 (点位维度 - 原子打卡) -->
+                    <div>
+                        <div class="text-[9px] text-gray-400 mb-2">● 已点亮足迹点位 (2/12)</div>
+                        <div class="grid grid-cols-6 gap-2">
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 lo-fi rounded bg-red-100 flex items-center justify-center text-sm border-red-300">📍</div>
+                                <span class="text-[7px] mt-1 scale-90 text-red-800">泸定桥</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-8 h-8 lo-fi rounded bg-red-100 flex items-center justify-center text-sm border-red-300">📍</div>
+                                <span class="text-[7px] mt-1 scale-90 text-red-800">夹金山</span>
+                            </div>
+                            <div class="flex flex-col items-center opacity-20">
+                                <div class="w-8 h-8 lo-fi rounded bg-gray-100 flex items-center justify-center text-sm">○</div>
+                                <span class="text-[7px] mt-1 scale-90">安顺场</span>
+                            </div>
+                            <div class="flex flex-col items-center opacity-20">
+                                <div class="w-8 h-8 lo-fi rounded bg-gray-100 flex items-center justify-center text-sm">○</div>
+                                <span class="text-[7px] mt-1 scale-90">攀枝花</span>
+                            </div>
+                            <div class="flex flex-col items-center opacity-20">
+                                <div class="w-8 h-8 lo-fi rounded bg-gray-100 flex items-center justify-center text-sm">○</div>
+                                <span class="text-[7px] mt-1 scale-90">映秀</span>
+                            </div>
+                            <div class="flex flex-col items-center opacity-20">
+                                <div class="w-8 h-8 lo-fi rounded bg-gray-100 flex items-center justify-center text-sm">○</div>
+                                <span class="text-[7px] mt-1 scale-90">巴中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-20">
+                    <div class="lo-fi p-2 text-sm">
+                        <div class="font-bold">泸定桥：二十二勇士的热血时刻</div>
+                        <div class="text-xs text-gray-500">刚刚发布 · 四川观察</div>
+                    </div>
+                    <div class="lo-fi p-2 text-sm">
+                        <div class="font-bold">打卡骑行：在巴蜀大地上绘出红星</div>
+                        <div class="text-xs text-gray-500">文旅频道 · 3.2万参与</div>
+                    </div>
+                    <!-- 补充一点占位内容，模拟长页面 -->
+                    <div class="lo-fi p-2 text-sm">
+                        <div class="font-bold">红色四川：重走长征路的意义</div>
+                        <div class="text-xs text-gray-500">3小时前 · 理论频道</div>
+                    </div>
+                </div>
+
+                <!-- 灵动球唤醒 -->
+                <div class="agent-orb" onclick="openAgent()">红色探险</div>
+            </div>
+
+            <!-- 智能体交互层 (覆盖) -->
+            <div id="agent-overlay" class="absolute inset-0 bg-black/40 hidden flex items-end">
+                <div class="w-full bg-white rounded-t-3xl p-6 lo-fi">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-12 h-12 lo-fi rounded-full bg-red-100 flex items-center justify-center text-xl">👤</div>
+                        <div>
+                            <div class="font-bold">红色领航员</div>
+                            <div class="text-xs text-green-600">LBS 感知中: 泸定桥附近</div>
+                        </div>
+                    </div>
+                    <div class="lo-fi p-3 bg-gray-50 text-sm mb-4">
+                        "感知到你已抵达长征关键地标 <span class='font-bold text-red-600'>泸定桥</span>，你可以选择："
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="gotoScreen('screen-history')" class="w-full lo-fi-btn text-sm flex justify-between items-center bg-white">
+                            <span>📍 快速点亮足迹 (获得积分)</span>
+                            <span class="text-[10px] text-gray-400">一键打卡 ></span>
+                        </button>
+                        <button onclick="gotoScreen('screen-map')" class="w-full lo-fi-btn text-sm flex justify-between items-center bg-red-600 text-white border-none">
+                            <span>🏁 参与“飞夺先锋”挑战</span>
+                            <span class="text-[10px] text-white/80">赢取勋章 ></span>
+                        </button>
+                        <button onclick="gotoScreen('screen-chat')" class="w-full lo-fi-btn text-sm flex justify-between items-center bg-black text-white border-none">
+                            <span>💬 咨询智能助手</span>
+                            <span class="text-[10px] text-white/80">了解历史 ></span>
+                        </button>
+                        <button onclick="closeAgent()" class="w-full lo-fi-btn text-xs text-gray-400 border-none mt-2">稍后再说</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 星火轨迹地图屏 -->
+            <div id="screen-map" class="screen p-4 h-full bg-gray-50">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="gotoScreen('app-home')" class="text-sm">← 返回</button>
+                    <span class="font-bold">星火轨迹</span>
+                    <span>⚙️</span>
+                </div>
+                <div class="lo-fi h-64 bg-blue-100 mb-4 relative flex items-center justify-center">
+                    [ 极简地图 Canvas ]
+                    <!-- 党徽轨迹模拟 -->
+                    <svg class="absolute inset-0 w-full h-full p-8" viewBox="0 0 100 100">
+                        <path d="M20,50 Q50,20 80,50 Q50,80 20,50 Z" fill="none" stroke="red" stroke-width="2" stroke-dasharray="4" />
+                        <circle cx="20" cy="50" r="2" fill="red" />
+                    </svg>
+                    <div class="absolute bottom-2 right-2 bg-white/80 text-[10px] p-1 lo-fi">当前位置: 泸定桥入口</div>
+                </div>
+                <div class="lo-fi p-3 mb-4 text-xs">
+                    <div class="font-bold mb-1">正在挑战: 党徽骑行路线 (3.2km)</div>
+                    <div class="flex justify-between">
+                        <span>进度: 15%</span>
+                        <span>耗时: 12:05</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 mt-1 lo-fi overflow-hidden">
+                        <div class="w-[15%] h-full bg-red-500"></div>
+                    </div>
+                </div>
+                <div class="lo-fi p-3 bg-yellow-50 text-xs italic">
+                    "AI伴随播报: 注意，前方500米是当年红军集结地，正在为你调取历史简报..."
+                </div>
+                <button onclick="gotoScreen('screen-share')" class="w-full mt-4 lo-fi-btn bg-red-600 text-white font-bold py-2">模拟完成挑战</button>
+            </div>
+
+            <!-- 成就海报屏 -->
+            <div id="screen-share" class="screen p-4 h-full overflow-y-auto">
+                <div class="lo-fi p-6 bg-red-50 text-center space-y-4">
+                    <h2 class="font-bold text-xl">挑战成功!</h2>
+                    <div class="lo-fi h-48 bg-white flex flex-col items-center justify-center p-4">
+                        <div class="text-xs mb-2">你在大渡河畔留下了红色足迹</div>
+                        <div class="lo-fi w-full h-32 bg-gray-200">[ 用户轨迹 + 地标照片 ]</div>
+                    </div>
+                    <div class="text-sm">解锁勋章: <span class="font-bold">飞夺泸定桥先锋</span></div>
+                    <button class="w-full lo-fi-btn bg-black text-white py-2">分享到朋友圈 (DAU增长点)</button>
+                    <button onclick="gotoScreen('screen-history')" class="w-full lo-fi-btn text-xs">查看我的所有足迹</button>
+                </div>
+                <button onclick="gotoScreen('app-home')" class="w-full mt-4 lo-fi-btn">返回首页</button>
+            </div>
+
+            <!-- 历史记录屏 (足迹档案) -->
+            <div id="screen-history" class="screen p-4 bg-gray-50 h-full overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="gotoScreen('app-home')" class="text-sm">← 返回</button>
+                    <span class="font-bold">我的红色足迹档案</span>
+                    <div class="w-8"></div>
+                </div>
+                
+                <!-- 档案分类切换 (极简) -->
+                <div class="flex border-2 border-gray-800 rounded mb-6 overflow-hidden">
+                    <button id="btn-history-points" onclick="switchHistoryTab('points')" class="flex-1 py-1 text-xs bg-gray-800 text-white">点位足迹</button>
+                    <button id="btn-history-medals" onclick="switchHistoryTab('medals')" class="flex-1 py-1 text-xs bg-white text-gray-800 border-l-2 border-gray-800">成就勋章</button>
+                </div>
+
+                <!-- 点位足迹视图 -->
+                <div id="history-points-view" class="space-y-4">
+                    <div class="text-[10px] font-bold text-red-800">● 2026年4月</div>
+                    <div class="lo-fi p-3 bg-white border-l-4 border-red-600">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="font-bold text-xs">📍 泸定桥 - 点位打卡</span>
+                            <span class="text-[8px] text-gray-400">04-06 12:00</span>
+                        </div>
+                        <div class="text-[9px] text-gray-500 italic">“已点亮该地标，解锁AI讲解权限”</div>
+                    </div>
+                    <div class="text-[10px] font-bold text-red-800">● 2026年3月</div>
+                    <div class="lo-fi p-3 bg-white border-l-4 border-yellow-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-xs">🏁 夹金山雪山徒步挑战</span>
+                            <span class="text-[8px] text-gray-400">03-15 14:30</span>
+                        </div>
+                        <div class="flex space-x-3 items-center">
+                            <div class="w-12 h-10 bg-gray-100 lo-fi flex items-center justify-center text-[8px] text-gray-400">轨迹图</div>
+                            <div class="flex-1 text-[9px] text-gray-600">
+                                <div>里程: 5.8km | 用时: 1:45:00</div>
+                                <div class="text-yellow-600 font-bold">获得勋章: 翻越雪山勋章 🏅</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 成就勋章视图 -->
+                <div id="history-medals-view" class="hidden grid grid-cols-3 gap-4">
+                    <div class="flex flex-col items-center p-2 lo-fi bg-white cursor-pointer" onclick="showMedalDetail('飞夺先锋', '🎖️', '2026-04-06', '在泸定桥骑行挑战中表现卓越。')">
+                        <div class="w-16 h-16 rounded-full bg-yellow-400 flex items-center justify-center text-2xl mb-2">🎖️</div>
+                        <span class="text-[10px] font-bold">飞夺先锋</span>
+                    </div>
+                    <div class="flex flex-col items-center p-2 lo-fi bg-gray-100 opacity-50 grayscale cursor-pointer" onclick="showMedalDetail('翻越雪山', '🏅', '尚未获得', '完成夹金山挑战解锁。')">
+                        <div class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-2xl mb-2">🏅</div>
+                        <span class="text-[10px]">翻越雪山</span>
+                    </div>
+                    <div class="flex flex-col items-center p-2 lo-fi bg-gray-100 opacity-50 grayscale cursor-pointer" onclick="showMedalDetail('脱贫见证', '🏆', '尚未获得', '探访大凉山解锁。')">
+                        <div class="w-16 h-16 rounded-full bg-gray-300 flex items-center justify-center text-2xl mb-2">🏆</div>
+                        <span class="text-[10px]">脱贫见证</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 勋章详情屏 (新增) -->
+            <div id="screen-medal-detail" class="screen p-4 bg-white h-full overflow-y-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="gotoScreen('screen-history')" class="text-sm">← 返回</button>
+                    <span class="font-bold">勋章详情</span>
+                    <div class="w-8"></div>
+                </div>
+                
+                <div class="flex flex-col items-center space-y-6">
+                    <div id="detail-medal-icon" class="w-32 h-32 lo-fi rounded-full bg-yellow-400 flex items-center justify-center text-6xl shadow-xl border-4 border-white">🎖️</div>
+                    <div class="text-center">
+                        <h2 id="detail-medal-name" class="text-2xl font-bold text-red-800">飞夺先锋</h2>
+                        <p id="detail-medal-date" class="text-xs text-gray-500 mt-1">获得日期: 2026-04-06</p>
+                    </div>
+                    
+                    <div class="lo-fi p-4 w-full bg-red-50 space-y-4">
+                        <h3 class="font-bold text-sm border-b-2 border-red-200 pb-1">勋章简介</h3>
+                        <p id="detail-medal-desc" class="text-xs text-gray-700 leading-relaxed">
+                            在泸定桥骑行挑战中表现卓越，完美复刻红军飞夺铁索桥的神速。
+                        </p>
+                    </div>
+
+                    <div class="lo-fi p-4 w-full space-y-4">
+                        <h3 class="font-bold text-sm border-b-2 border-gray-200 pb-1">专属权益</h3>
+                        <ul class="text-[10px] space-y-2 text-gray-600">
+                            <li>● 泸定桥景区门票 8 折优惠</li>
+                            <li>● 红色智能助手专属“先锋”语音包</li>
+                            <li>● 四川观察 APP 专属成就徽章</li>
+                        </ul>
+                    </div>
+
+                    <button class="w-full lo-fi-btn bg-red-600 text-white font-bold py-3 mt-4">炫耀一下 (分享海报)</button>
+                </div>
+            </div>
+
+            <!-- 智能对话屏 (新增) -->
+            <div id="screen-chat" class="screen h-full flex flex-col bg-gray-50">
+                <div class="p-4 flex justify-between items-center bg-white border-b-2 border-gray-800">
+                    <button onclick="gotoScreen('app-home')" class="text-sm">← 返回</button>
+                    <span class="font-bold">红色智能助手</span>
+                    <div class="w-8"></div>
+                </div>
+                
+                <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 pb-4">
+                    <!-- AI 欢迎语 -->
+                    <div class="flex items-start space-x-2">
+                        <div class="w-8 h-8 lo-fi rounded-full bg-red-100 flex items-center justify-center text-xs">👤</div>
+                        <div class="max-w-[80%] space-y-3">
+                            <div class="lo-fi p-2 bg-white text-xs">
+                                同志您好！我是您的红色智能助手。您可以点击下方问题或直接输入，开启探险之旅。
+                            </div>
+                            <!-- 常见问题 -->
+                            <div id="common-questions" class="space-y-2">
+                                <button onclick="simulateAsk('泸定桥是什么时候夺取的？')" class="block w-full text-left lo-fi-btn text-[10px] py-1">“泸定桥是什么时候夺取的？”</button>
+                                <button onclick="simulateAsk('附近有什么推荐的研学路线？')" class="block w-full text-left lo-fi-btn text-[10px] py-1">“附近有什么推荐的研学路线？”</button>
+                                <button onclick="simulateAsk('如何参与党徽骑行挑战？')" class="block w-full text-left lo-fi-btn text-[10px] py-1">“如何参与党徽骑行挑战？”</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 动态消息插入点 -->
+                    <div id="dynamic-chat-content" class="space-y-4"></div>
+                </div>
+
+                <!-- 回复内容模板 (隐藏) -->
+                <div id="ai-response-template" class="hidden">
+                    <div class="flex items-start space-x-2 mb-4">
+                        <div class="w-8 h-8 lo-fi rounded-full bg-red-100 flex items-center justify-center text-xs">👤</div>
+                        <div class="max-w-[85%] space-y-3">
+                            <div class="lo-fi p-2 bg-white text-xs ai-text"></div>
+                            <div class="lo-fi p-2 bg-white border-l-4 border-red-600 ai-news">
+                                <div class="text-[10px] text-gray-400 mb-1">相关新闻</div>
+                                <div class="font-bold text-xs mb-1 news-title"></div>
+                                <div class="text-[10px] text-gray-500 line-clamp-2 news-desc"></div>
+                            </div>
+                            <div class="lo-fi p-0 overflow-hidden bg-white ai-video">
+                                <div class="h-24 bg-gray-800 flex items-center justify-center relative">
+                                    <span class="text-white text-2xl">▶</span>
+                                </div>
+                                <div class="p-2">
+                                    <div class="font-bold text-[10px] video-title"></div>
+                                </div>
+                            </div>
+                            <div class="lo-fi p-2 bg-red-50 border-2 border-red-200 ai-activity">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="bg-red-600 text-white text-[8px] px-1 rounded">推荐活动</span>
+                                </div>
+                                <div class="font-bold text-xs mb-1 activity-title"></div>
+                                <button onclick="gotoScreen('screen-map')" class="w-full mt-1 py-1 bg-white border-2 border-red-600 text-red-600 text-[10px] font-bold">立即参与</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 输入框 (已固定在底部) -->
+                <div class="p-4 bg-white border-t-2 border-gray-800 flex space-x-2 items-center pb-8">
+                    <input type="text" id="chat-input" placeholder="输入您想了解的问题..." class="flex-1 lo-fi-input text-xs">
+                    <button onclick="simulateAsk(document.getElementById('chat-input').value)" class="lo-fi-btn bg-black text-white text-xs px-4">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 运营后台 原型 ================= -->
+    <div id="backend-view" class="view hidden">
+        <div class="max-w-6xl mx-auto lo-fi bg-white min-h-[600px] flex">
+            <!-- 侧边栏 -->
+            <div class="w-64 border-r-2 border-gray-800 p-4 space-y-4 bg-gray-50">
+                <div class="font-bold text-lg mb-6 border-b-2 border-gray-800 pb-2">超级智能体中台</div>
+                <div onclick="switchBackendMenu('menu-kb')" id="btn-menu-kb" class="lo-fi-btn active-menu">知识库管理 (5要素)</div>
+                <div onclick="switchBackendMenu('menu-graph')" id="btn-menu-graph" class="lo-fi-btn">知识图谱编辑器</div>
+                <div onclick="switchBackendMenu('menu-mission')" id="btn-menu-mission" class="lo-fi-btn">打卡活动管理</div>
+                <div onclick="switchBackendMenu('menu-persona')" id="btn-menu-persona" class="lo-fi-btn">智能体人格/策略</div>
+                <div onclick="switchBackendMenu('menu-data')" id="btn-menu-data" class="lo-fi-btn">运营数据看板</div>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="flex-1 p-8 overflow-y-auto max-h-[700px]">
+                <!-- 知识库管理 -->
+                <div id="menu-kb" class="backend-screen active">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold">知识库管理 - 红色大脑</h2>
+                        <div class="flex space-x-2">
+                            <button onclick="switchKbSubMenu('entity')" id="btn-kb-entity" class="lo-fi-btn active-menu text-xs">红色实体库 (5要素)</button>
+                            <button onclick="switchKbSubMenu('study')" id="btn-kb-study" class="lo-fi-btn text-xs">研学路线库</button>
+                        </div>
+                    </div>
+
+                    <!-- 红色实体库子页面 -->
+                    <div id="kb-sub-entity" class="kb-sub-screen">
+                        <div class="flex justify-between items-center mb-4">
+                            <!-- 主题筛选 -->
+                            <div class="flex space-x-2">
+                                <span class="text-xs font-bold self-center mr-2">主题筛选:</span>
+                                <button class="lo-fi-btn active-menu text-[10px]">全部</button>
+                                <button class="lo-fi-btn text-[10px]">长征</button>
+                                <button class="lo-fi-btn text-[10px]">伟人故里</button>
+                                <button class="lo-fi-btn text-[10px]">川陕苏区</button>
+                                <button class="lo-fi-btn text-[10px]">三线建设</button>
+                                <button class="lo-fi-btn text-[10px]">抗震救灾</button>
+                                <button class="lo-fi-btn text-[10px]">脱贫攻坚</button>
+                            </div>
+                            <button class="lo-fi-btn bg-blue-100 text-xs">+ 导入公开资源 (AI自动抓取)</button>
+                        </div>
+                        <!-- 5要素筛选/搜索 -->
+                        <div class="grid grid-cols-5 gap-4 mb-6">
+                            <input type="text" placeholder="人物(人)..." class="lo-fi-input text-xs">
+                            <input type="text" placeholder="地点(地)..." class="lo-fi-input text-xs">
+                            <input type="text" placeholder="事件(事)..." class="lo-fi-input text-xs">
+                            <input type="text" placeholder="物品(物)..." class="lo-fi-input text-xs">
+                            <input type="text" placeholder="时间(时)..." class="lo-fi-input text-xs">
+                        </div>
+
+                        <!-- 数据列表 -->
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border-2 border-gray-800 p-2 text-xs">所属主题</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">人物 (人)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">地点 (地)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">事件 (事)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">物品 (物)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">时间 (时)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-[10px]"><span class="bg-red-100 px-1 rounded">长征</span></td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">22名突击队员</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">泸定桥</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">飞夺泸定桥</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">铁索/草鞋</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">1935-05-29</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showEntityForm('22名突击队员', '长征')" class="text-blue-600 underline">编辑</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-[10px]"><span class="bg-blue-100 px-1 rounded">伟人故里</span></td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">赵一曼</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">宜宾赵一曼纪念馆</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">抗日斗争</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">家书</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">1905-1936</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showEntityForm('赵一曼', '伟人故里', true)" class="text-blue-600 underline">审核</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-[10px]"><span class="bg-orange-100 px-1 rounded">三线建设</span></td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">三线建设者</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">攀枝花大开挖</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">攀钢建设</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">风钻/安全帽</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">1965-1970</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showEntityForm('三线建设者', '三线建设')" class="text-blue-600 underline">编辑</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 研学路线库子页面 -->
+                    <div id="kb-sub-study" class="kb-sub-screen hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <!-- 主题筛选 -->
+                            <div class="flex space-x-2">
+                                <span class="text-xs font-bold self-center mr-2">路线主题:</span>
+                                <button class="lo-fi-btn active-menu text-[10px]">全部</button>
+                                <button class="lo-fi-btn text-[10px]">长征</button>
+                                <button class="lo-fi-btn text-[10px]">抗震救灾</button>
+                                <button class="lo-fi-btn text-[10px]">脱贫攻坚</button>
+                            </div>
+                            <button onclick="showStudyForm()" class="lo-fi-btn bg-red-100 text-xs">+ 创建研学路线</button>
+                        </div>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border-2 border-gray-800 p-2 text-xs">所属主题</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">路线名称</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">针对群体</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">包含地标 (关联实体)</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">建议时长</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-[10px]"><span class="bg-red-100 px-1 rounded">长征</span></td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs font-bold">“重走长征路”青少年研学营</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">中小学生</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">泸定桥、夹金山、安顺场</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">3天2夜</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showStudyForm('“重走长征路”青少年研学营')" class="text-blue-600 underline">编辑路线</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-[10px]"><span class="bg-green-100 px-1 rounded">抗震救灾</span></td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs font-bold">汶川大地震：生命奇迹寻访</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">社会公众</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">映秀遗址、水磨古镇</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">1天</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showStudyForm('红色宜宾：英雄足迹寻访')" class="text-blue-600 underline">编辑路线</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 研学路线表单子页面 (新增) -->
+                    <div id="kb-sub-study-form" class="kb-sub-screen hidden">
+                        <div class="mb-6 flex items-center space-x-4">
+                            <button onclick="switchKbSubMenu('study')" class="text-xs lo-fi-btn">← 返回列表</button>
+                            <h3 id="study-form-title" class="text-xl font-bold">创建研学路线</h3>
+                        </div>
+                        <div class="max-w-3xl lo-fi p-6 space-y-6">
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold">路线名称</label>
+                                    <input id="form-study-name" type="text" class="lo-fi-input text-sm" placeholder="请输入路线名称">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold">针对群体</label>
+                                    <select id="form-study-group" class="lo-fi-input text-sm">
+                                        <option value="中小学生">中小学生</option>
+                                        <option value="大学生">大学生</option>
+                                        <option value="政企团建">政企团建</option>
+                                        <option value="亲子家庭">亲子家庭</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold">包含地标 (关联红色实体库)</label>
+                                <div class="flex flex-wrap gap-2 mb-2" id="form-study-tags">
+                                    <span class="bg-red-50 border-2 border-red-800 px-2 py-1 text-[10px] rounded flex items-center">
+                                        泸定桥 <button class="ml-1 text-red-800 font-bold">×</button>
+                                    </span>
+                                    <span class="bg-red-50 border-2 border-red-800 px-2 py-1 text-[10px] rounded flex items-center">
+                                        夹金山 <button class="ml-1 text-red-800 font-bold">×</button>
+                                    </span>
+                                    <button class="border-2 border-dashed border-gray-400 px-2 py-1 text-[10px] text-gray-500 rounded">+ 选择地标</button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold">建议时长</label>
+                                    <input id="form-study-duration" type="text" class="lo-fi-input text-sm" placeholder="如：3天2夜">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold">难度系数</label>
+                                    <select class="lo-fi-input text-sm">
+                                        <option>★☆☆☆☆ (轻松)</option>
+                                        <option>★★★☆☆ (适中)</option>
+                                        <option>★★★★★ (挑战)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold">路线简介 (AI 智能生成底稿)</label>
+                                <textarea class="lo-fi-input text-sm h-32" placeholder="请输入研学路线的详细描述，支持 AI 辅助生成文案..."></textarea>
+                            </div>
+                            <div class="flex space-x-4">
+                                <button onclick="switchKbSubMenu('study')" class="flex-1 lo-fi-btn bg-black text-white py-3">保存路线</button>
+                                <button onclick="switchKbSubMenu('study')" class="flex-1 lo-fi-btn py-3">取消</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 红色实体表单子页面 (新增) -->
+                    <div id="kb-sub-entity-form" class="kb-sub-screen hidden">
+                        <div class="mb-6 flex items-center space-x-4">
+                            <button onclick="switchKbSubMenu('entity')" class="text-xs lo-fi-btn">← 返回列表</button>
+                            <h3 id="entity-form-title" class="text-xl font-bold">编辑红色实体</h3>
+                        </div>
+                        <div class="max-w-4xl lo-fi p-6 space-y-6 bg-white">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="space-y-1">
+                                    <label class="block text-[10px] font-bold">所属主题</label>
+                                    <select id="form-entity-theme" class="lo-fi-input text-xs">
+                                        <option value="长征">长征</option>
+                                        <option value="伟人故里">伟人故里</option>
+                                        <option value="川陕苏区">川陕苏区</option>
+                                        <option value="三线建设">三线建设</option>
+                                        <option value="抗震救灾">抗震救灾</option>
+                                        <option value="脱贫攻坚">脱贫攻坚</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-2 space-y-1">
+                                    <label class="block text-[10px] font-bold">实体名称</label>
+                                    <input id="form-entity-name" type="text" class="lo-fi-input text-xs" placeholder="例如：泸定桥">
+                                </div>
+                            </div>
+
+                            <div class="border-2 border-dashed border-gray-300 p-4 rounded bg-gray-50">
+                                <h4 class="text-xs font-bold mb-4 flex items-center">
+                                    <span class="bg-black text-white px-2 py-0.5 rounded mr-2">5 要素结构化</span> 
+                                    <span class="text-[10px] text-gray-400 font-normal">(由 AI 自动提取，可手动修正)</span>
+                                </h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="space-y-1">
+                                        <label class="block text-[10px] font-bold text-red-800">人物 (人)</label>
+                                        <input type="text" class="lo-fi-input text-xs" placeholder="相关历史人物">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="block text-[10px] font-bold text-blue-800">地点 (地)</label>
+                                        <input type="text" class="lo-fi-input text-xs" placeholder="地理坐标/景区名称">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="block text-[10px] font-bold text-green-800">事件 (事)</label>
+                                        <input type="text" class="lo-fi-input text-xs" placeholder="发生的核心事件">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="block text-[10px] font-bold text-orange-800">物品 (物)</label>
+                                        <input type="text" class="lo-fi-input text-xs" placeholder="相关文物/遗迹">
+                                    </div>
+                                    <div class="space-y-1 col-span-2">
+                                        <label class="block text-[10px] font-bold text-purple-800">时间 (时)</label>
+                                        <input type="text" class="lo-fi-input text-xs" placeholder="历史发生时间/时间段">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="block text-[10px] font-bold">AI 智能简报 (对话播报底稿)</label>
+                                <textarea class="lo-fi-input text-xs h-24" placeholder="AI 自动生成的历史简报，将用于智能体语音播报..."></textarea>
+                            </div>
+
+                            <div id="audit-actions" class="hidden flex space-x-4">
+                                <button onclick="switchKbSubMenu('entity')" class="flex-1 lo-fi-btn bg-green-600 text-white border-none py-3 font-bold">审核通过</button>
+                                <button onclick="switchKbSubMenu('entity')" class="flex-1 lo-fi-btn bg-red-600 text-white border-none py-3 font-bold">驳回修改</button>
+                            </div>
+                            <div id="edit-actions" class="flex space-x-4">
+                                <button onclick="switchKbSubMenu('entity')" class="flex-1 lo-fi-btn bg-black text-white py-3 font-bold">保存修改</button>
+                                <button onclick="switchKbSubMenu('entity')" class="flex-1 lo-fi-btn py-3 font-bold">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 知识图谱编辑器 -->
+                <div id="menu-graph" class="backend-screen">
+                    <h2 class="text-2xl font-bold mb-8">知识图谱可视化编辑器</h2>
+                    <div class="lo-fi h-[500px] bg-gray-50 relative overflow-hidden flex items-center justify-center">
+                        <div class="absolute lo-fi p-2 bg-white text-xs cursor-move" style="top:20%; left:40%;">泸定桥 (地)</div>
+                        <div class="absolute lo-fi p-2 bg-white text-xs cursor-move" style="top:50%; left:20%;">长征路线 (事)</div>
+                        <div class="absolute lo-fi p-2 bg-white text-xs cursor-move" style="top:60%; left:60%;">红一方面军 (人)</div>
+                        <div class="absolute lo-fi p-2 bg-white text-xs cursor-move" style="top:10%; left:10%;">草鞋 (物)</div>
+                        <!-- 连接线示意 -->
+                        <svg class="absolute inset-0 w-full h-full pointer-events-none">
+                            <line x1="40%" y1="20%" x2="20%" y2="50%" stroke="#333" stroke-width="2" />
+                            <line x1="40%" y1="20%" x2="60%" y2="60%" stroke="#333" stroke-width="2" />
+                            <line x1="20%" y1="50%" x2="10%" y2="10%" stroke="#333" stroke-width="2" stroke-dasharray="4" />
+                        </svg>
+                        <div class="absolute bottom-4 left-4 text-xs bg-white/80 p-2 lo-fi">
+                            操作提示: 拖动节点建立关联，右键点击编辑属性
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 打卡活动管理 -->
+                <div id="menu-mission" class="backend-screen">
+                    <!-- 列表子页面 -->
+                    <div id="mission-list-sub" class="kb-sub-screen">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-2xl font-bold">打卡活动管理</h2>
+                            <button onclick="showMissionForm()" class="lo-fi-btn bg-red-100">+ 创建打卡活动</button>
+                        </div>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border-2 border-gray-800 p-2 text-xs">活动名称</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">活动类型</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">轨迹形状</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">累计参与</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">状态</th>
+                                    <th class="border-2 border-gray-800 p-2 text-xs">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-xs font-bold">泸定桥：二十二勇士热血骑行</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">骑行</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">党徽</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">12,405</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs text-green-600">进行中</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showMissionForm('泸定桥：二十二勇士热血骑行')" class="text-blue-600 underline">编辑配置</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border-2 border-gray-800 p-2 text-xs font-bold">夹金山：雪山红星徒步挑战</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">徒步</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">红星</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">5,892</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs text-green-600">进行中</td>
+                                    <td class="border-2 border-gray-800 p-2 text-xs">
+                                        <button onclick="showMissionForm('夹金山：雪山红星徒步挑战')" class="text-blue-600 underline">编辑配置</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 配置表单子页面 -->
+                    <div id="mission-form-sub" class="kb-sub-screen hidden">
+                        <div class="mb-6 flex items-center space-x-4">
+                            <button onclick="hideMissionForm()" class="text-xs lo-fi-btn">← 返回列表</button>
+                            <h2 id="mission-form-title" class="text-2xl font-bold">配置打卡活动</h2>
+                        </div>
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="lo-fi p-4">
+                                <h3 class="font-bold mb-4">1. 轨迹路线绘制 (LBS)</h3>
+                                <div class="lo-fi h-64 bg-blue-50 mb-4 flex items-center justify-center relative">
+                                    [ 交互式地图组件 ]
+                                    <svg class="absolute inset-0 w-full h-full p-8" viewBox="0 0 100 100">
+                                        <path d="M10,10 L30,40 L60,20 L90,50" fill="none" stroke="blue" stroke-width="2" />
+                                        <circle cx="10" cy="10" r="2" fill="red" />
+                                        <circle cx="90" cy="50" r="2" fill="red" />
+                                    </svg>
+                                </div>
+                                <button class="w-full lo-fi-btn">+ 绘制新路线 (党徽/红星等形状)</button>
+                            </div>
+                            <div class="lo-fi p-4">
+                                <h3 class="font-bold mb-4">2. 任务规则设定</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-xs block mb-1">活动名称</label>
+                                        <input id="form-mission-name" type="text" class="lo-fi-input" value="泸定桥骑行挑战赛">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs block mb-1">完成奖励</label>
+                                        <select class="lo-fi-input">
+                                            <option>红色先锋勋章</option>
+                                            <option>线下景区门票8折券</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs block mb-1">触发范围 (米)</label>
+                                        <input type="number" class="lo-fi-input" value="500">
+                                    </div>
+                                    <button onclick="hideMissionForm()" class="w-full lo-fi-btn bg-green-100">保存并发布活动</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 智能体人格/策略 -->
+                <div id="menu-persona" class="backend-screen">
+                    <h2 class="text-2xl font-bold mb-8">智能体人格与策略中心</h2>
+                    <div class="max-w-2xl lo-fi p-6 space-y-6">
+                        <div class="flex items-center space-x-6">
+                            <div class="w-24 h-24 lo-fi rounded-full bg-red-100 flex items-center justify-center text-4xl">👤</div>
+                            <button class="lo-fi-btn text-xs">更换 AI 头像</button>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-2">人格名称</label>
+                            <input type="text" class="lo-fi-input" value="红色领航员">
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-2">话术风格配置</label>
+                            <textarea class="lo-fi-input h-24">热血、充满感染力、富有历史底蕴。
+常用词: "同志"、"星火"、"不忘初心"。</textarea>
+                        </div>
+                        <div>
+                            <label class="font-bold block mb-2">智能唤醒策略</label>
+                            <div class="space-y-2">
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" checked> <span class="text-sm">进入红色地标 500m 范围内主动唤醒</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <input type="checkbox" checked> <span class="text-sm">用户搜索"长征"、"革命"相关词汇时介入</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full lo-fi-btn bg-black text-white py-3">更新智能体配置</button>
+                    </div>
+                </div>
+
+                <!-- 运营数据看板 -->
+                <div id="menu-data" class="backend-screen">
+                    <h2 class="text-2xl font-bold mb-8">运营数据驾驶舱</h2>
+                    <div class="grid grid-cols-4 gap-4 mb-8">
+                        <div class="lo-fi p-4 bg-blue-50">
+                            <div class="text-xs text-gray-500">今日 DAU 贡献</div>
+                            <div class="text-2xl font-bold">12,405</div>
+                            <div class="text-[10px] text-green-600">↑ 15.2%</div>
+                        </div>
+                        <div class="lo-fi p-4 bg-red-50">
+                            <div class="text-xs text-gray-500">任务完成率</div>
+                            <div class="text-2xl font-bold">68.5%</div>
+                            <div class="text-[10px] text-red-600">↓ 2.1%</div>
+                        </div>
+                        <div class="lo-fi p-4 bg-green-50">
+                            <div class="text-xs text-gray-500">轨迹海报分享数</div>
+                            <div class="text-2xl font-bold">3,892</div>
+                            <div class="text-[10px] text-green-600">↑ 42.8%</div>
+                        </div>
+                        <div class="lo-fi p-4 bg-yellow-50">
+                            <div class="text-xs text-gray-500">新增红色情报员</div>
+                            <div class="text-2xl font-bold">856</div>
+                            <div class="text-[10px] text-green-600">↑ 8.4%</div>
+                        </div>
+                    </div>
+                    <div class="lo-fi p-6">
+                        <h3 class="font-bold mb-4">近 7 日日活趋势 (红色智能体驱动)</h3>
+                        <div class="h-64 bg-gray-50 flex items-end justify-between px-10 pb-4 relative">
+                            <!-- 简易柱状图 -->
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 40%;"></div>
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 55%;"></div>
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 45%;"></div>
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 70%;"></div>
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 85%;"></div>
+                            <div class="w-8 bg-blue-300 lo-fi" style="height: 75%;"></div>
+                            <div class="w-8 bg-blue-600 lo-fi" style="height: 90%;"></div>
+                            <!-- 坐标轴 -->
+                            <div class="absolute bottom-4 left-4 right-4 h-[2px] bg-gray-800"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.getElementById(view + '-view').classList.remove('hidden');
+            
+            document.querySelectorAll('.lo-fi-btn').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById('btn-' + view).classList.add('active-tab');
+        }
+
+        function switchBackendMenu(menuId) {
+            // 切换屏幕
+            document.querySelectorAll('.backend-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(menuId).classList.add('active');
+
+            // 切换按钮状态 - 仅针对侧边栏按钮，避免影响内容区按钮
+            document.querySelectorAll('.view#backend-view .w-64 .lo-fi-btn').forEach(b => b.classList.remove('active-menu'));
+            document.getElementById('btn-' + menuId).classList.add('active-menu');
+
+            // 特殊处理：如果是知识库管理，确保子菜单状态正确
+            if (menuId === 'menu-kb') {
+                // 默认进入实体库，不触发 switchKbSubMenu 以免逻辑复杂，直接确保 HTML 初始状态
+            }
+
+            // 特殊处理：如果是打卡活动管理，默认显示列表页
+            if (menuId === 'menu-mission') {
+                hideMissionForm();
+            }
+        }
+
+        function showMissionForm(name) {
+            document.getElementById('mission-list-sub').classList.add('hidden');
+            document.getElementById('mission-form-sub').classList.remove('hidden');
+            
+            const title = document.getElementById('mission-form-title');
+            const nameInput = document.getElementById('form-mission-name');
+            
+            if (name) {
+                title.innerText = '编辑打卡活动';
+                nameInput.value = name;
+            } else {
+                title.innerText = '创建打卡活动';
+                nameInput.value = '';
+            }
+        }
+
+        function hideMissionForm() {
+            document.getElementById('mission-list-sub').classList.remove('hidden');
+            document.getElementById('mission-form-sub').classList.add('hidden');
+        }
+
+        function switchKbSubMenu(subId) {
+            // 切换子屏幕
+            document.querySelectorAll('.kb-sub-screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById('kb-sub-' + subId).classList.remove('hidden');
+
+            // 切换按钮状态 - 仅针对知识库子菜单按钮
+            document.getElementById('btn-kb-entity').classList.remove('active-menu');
+            document.getElementById('btn-kb-study').classList.remove('active-menu');
+            const targetBtn = document.getElementById('btn-kb-' + subId);
+            if (targetBtn) targetBtn.classList.add('active-menu');
+        }
+
+        function showStudyForm(name) {
+            switchKbSubMenu('study-form');
+            const title = document.getElementById('study-form-title');
+            const nameInput = document.getElementById('form-study-name');
+            
+            if (name) {
+                title.innerText = '编辑研学路线';
+                nameInput.value = name;
+            } else {
+                title.innerText = '创建研学路线';
+                nameInput.value = '';
+            }
+        }
+
+        function showEntityForm(name, theme, isAudit) {
+            switchKbSubMenu('entity-form');
+            const title = document.getElementById('entity-form-title');
+            const nameInput = document.getElementById('form-entity-name');
+            const themeSelect = document.getElementById('form-entity-theme');
+            const auditActions = document.getElementById('audit-actions');
+            const editActions = document.getElementById('edit-actions');
+            
+            nameInput.value = name || '';
+            themeSelect.value = theme || '长征';
+            
+            if (isAudit) {
+                title.innerText = '审核红色实体';
+                auditActions.classList.remove('hidden');
+                editActions.classList.add('hidden');
+            } else {
+                title.innerText = '编辑红色实体';
+                auditActions.classList.add('hidden');
+                editActions.classList.remove('hidden');
+            }
+        }
+
+        function openAgent() {
+            document.getElementById('agent-overlay').classList.remove('hidden');
+        }
+
+        function closeAgent() {
+            document.getElementById('agent-overlay').classList.add('hidden');
+        }
+
+        function gotoScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            closeAgent();
+        }
+
+        function switchHistoryTab(tab) {
+            const pointsView = document.getElementById('history-points-view');
+            const medalsView = document.getElementById('history-medals-view');
+            const pointsBtn = document.getElementById('btn-history-points');
+            const medalsBtn = document.getElementById('btn-history-medals');
+
+            if (tab === 'points') {
+                pointsView.classList.remove('hidden');
+                medalsView.classList.add('hidden');
+                pointsBtn.classList.add('bg-gray-800', 'text-white');
+                pointsBtn.classList.remove('bg-white', 'text-gray-800');
+                medalsBtn.classList.add('bg-white', 'text-gray-800');
+                medalsBtn.classList.remove('bg-gray-800', 'text-white');
+            } else {
+                pointsView.classList.add('hidden');
+                medalsView.classList.remove('hidden');
+                medalsBtn.classList.add('bg-gray-800', 'text-white');
+                medalsBtn.classList.remove('bg-white', 'text-gray-800');
+                pointsBtn.classList.add('bg-white', 'text-gray-800');
+                pointsBtn.classList.remove('bg-gray-800', 'text-white');
+            }
+        }
+
+        function showMedalDetail(name, icon, date, desc) {
+            document.getElementById('detail-medal-name').innerText = name;
+            document.getElementById('detail-medal-icon').innerText = icon;
+            document.getElementById('detail-medal-date').innerText = '获得日期: ' + date;
+            document.getElementById('detail-medal-desc').innerText = desc;
+            
+            // 如果未获得，调整样式
+            const iconDiv = document.getElementById('detail-medal-icon');
+            if (date === '尚未获得') {
+                iconDiv.classList.add('grayscale', 'opacity-50');
+            } else {
+                iconDiv.classList.remove('grayscale', 'opacity-50');
+            }
+            
+            gotoScreen('screen-medal-detail');
+        }
+
+        function simulateAsk(question) {
+            if (!question) return;
+            
+            const chatContent = document.getElementById('dynamic-chat-content');
+            const commonQs = document.getElementById('common-questions');
+            if (commonQs) commonQs.classList.add('hidden');
+
+            // 1. 添加用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'flex items-start justify-end space-x-2';
+            userMsg.innerHTML = `
+                <div class="max-w-[80%] lo-fi p-2 bg-red-600 text-white text-xs">${question}</div>
+                <div class="w-8 h-8 lo-fi rounded-full bg-gray-200 flex items-center justify-center text-xs">U</div>
+            `;
+            chatContent.appendChild(userMsg);
+
+            // 2. 模拟加载中
+            const typing = document.createElement('div');
+            typing.className = 'flex items-start space-x-2';
+            typing.innerHTML = `
+                <div class="w-8 h-8 lo-fi rounded-full bg-red-100 flex items-center justify-center text-xs">👤</div>
+                <div class="lo-fi p-2 bg-white text-xs italic">正在思考中...</div>
+            `;
+            chatContent.appendChild(typing);
+
+            // 3. 模拟回复
+            setTimeout(() => {
+                chatContent.removeChild(typing);
+                
+                const template = document.getElementById('ai-response-template').cloneNode(true);
+                template.classList.remove('hidden');
+                template.removeAttribute('id');
+
+                // 根据问题填充内容 (演示用)
+                template.querySelector('.ai-text').innerText = `好的，为您找到关于“${question.replace(/[“”?？]/g, '')}”的多维度情报：`;
+                template.querySelector('.news-title').innerText = `【深度】飞夺泸定桥：决定红军命运的12小时`;
+                template.querySelector('.news-desc').innerText = `在这场生死时速的较量中，红军将士创造了奇迹...`;
+                template.querySelector('.video-title').innerText = `《国家记忆》：飞夺泸定桥纪录片`;
+                template.querySelector('.activity-title').innerText = `“重走勇士路”党徽骑行挑战 (3.2km)`;
+
+                chatContent.appendChild(template);
+                
+                // 滚动到底部
+                const chatContainer = document.getElementById('chat-messages');
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                // 清空输入框
+                document.getElementById('chat-input').value = '';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
