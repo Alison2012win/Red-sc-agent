@@ -130,8 +130,7 @@
             <!-- APP 首页模拟 -->
             <div id="app-home" class="screen active p-4 h-full overflow-y-auto">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="font-bold text-lg">四川观察</span>
-                    <button onclick="gotoScreen('screen-history')" class="text-xs lo-fi-btn">我的记录</button>
+                    <span class="font-bold text-lg">红色四川</span>
                 </div>
 
                 <!-- 荣誉成就墙 (区分点位与活动) -->
@@ -378,7 +377,7 @@
                         </ul>
                     </div>
 
-                    <button class="w-full lo-fi-btn bg-red-600 text-white font-bold py-3 mt-4">炫耀一下 (分享海报)</button>
+                    <button id="detail-action-button" class="w-full lo-fi-btn bg-red-600 text-white font-bold py-3 mt-4">炫耀一下 (分享海报)</button>
                 </div>
             </div>
 
@@ -457,6 +456,7 @@
             <div class="w-64 border-r-2 border-gray-800 p-4 space-y-4 bg-gray-50">
                 <div class="font-bold text-lg mb-6 border-b-2 border-gray-800 pb-2">超级智能体中台</div>
                 <div onclick="switchBackendMenu('menu-kb')" id="btn-menu-kb" class="lo-fi-btn active-menu">知识库管理 (5要素)</div>
+                <div onclick="switchBackendMenu('menu-raw-kb')" id="btn-menu-raw-kb" class="lo-fi-btn">知识库</div>
                 <div onclick="switchBackendMenu('menu-graph')" id="btn-menu-graph" class="lo-fi-btn">知识图谱编辑器</div>
                 <div onclick="switchBackendMenu('menu-mission')" id="btn-menu-mission" class="lo-fi-btn">打卡活动管理</div>
                 <div onclick="switchBackendMenu('menu-persona')" id="btn-menu-persona" class="lo-fi-btn">智能体人格/策略</div>
@@ -730,6 +730,149 @@
                     </div>
                 </div>
 
+                <!-- 知识库 (原始资料仓) -->
+                <div id="menu-raw-kb" class="backend-screen">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-2xl font-bold">知识库 - 原始资料仓</h2>
+                        <div class="flex space-x-2">
+                            <button onclick="showImportDocModal()" class="lo-fi-btn bg-green-100">+ 导入本地文档(.pdf/doc)</button>
+                            <button onclick="showExistingResourceModal()" class="lo-fi-btn bg-blue-100">+ 选取已有资源 </button>
+                        </div>
+                    </div>
+
+                    <!-- 搜索与筛选 -->
+                    <div class="flex space-x-4 mb-6">
+                        <input type="text" placeholder="搜索文档名称、来源或标签..." class="flex-1 lo-fi-input">
+                        <button class="lo-fi-btn bg-black text-white px-6">搜索</button>
+                    </div>
+
+                    <!-- 文档列表 -->
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border-2 border-gray-800 p-2 text-sm">来源</th>
+                                <th class="border-2 border-gray-800 p-2 text-sm">文档名称</th>
+                                <th class="border-2 border-gray-800 p-2 text-sm">标签</th>
+                                <th class="border-2 border-gray-800 p-2 text-sm">解析状态</th>
+                                <th class="border-2 border-gray-800 p-2 text-sm">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border-2 border-gray-800 p-2 text-xs">本地上传</td>
+                                <td class="border-2 border-gray-800 p-2 text-xs font-bold underline cursor-pointer">泸定桥革命史研究报告.pdf</td>
+                                <td class="border-2 border-gray-800 p-2 text-[10px] space-x-1">
+                                    <span class="bg-gray-200 px-1 inline-flex items-center group">
+                                        <span class="cursor-pointer hover:underline" onclick="manageTag('edit', '历史文献')">历史文献</span>
+                                        <button class="ml-1 text-gray-400 hover:text-red-600" onclick="manageTag('delete', '历史文献')">×</button>
+                                    </span>
+                                    <span class="bg-gray-200 px-1 inline-flex items-center group">
+                                        <span class="cursor-pointer hover:underline" onclick="manageTag('edit', '长征')">长征</span>
+                                        <button class="ml-1 text-gray-400 hover:text-red-600" onclick="manageTag('delete', '长征')">×</button>
+                                    </span>
+                                    <button class="border border-dashed border-gray-400 px-1 text-gray-500 hover:bg-gray-100" onclick="manageTag('add')">+</button>
+                                </td>
+                                <td class="border-2 border-gray-800 p-2 text-xs text-green-600">已提取5要素</td>
+                                <td class="border-2 border-gray-800 p-2 text-xs">
+                                    <button onclick="showRawDocPreview('泸定桥革命史研究报告.pdf')" class="text-blue-600 underline">查看原文</button> | 
+                                    <button onclick="showReparseAnim('泸定桥革命史研究报告.pdf')" class="text-blue-600 underline">重新解析</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="border-2 border-gray-800 p-2 text-xs">四川观察APP</td>
+                                <td class="border-2 border-gray-800 p-2 text-xs font-bold underline cursor-pointer">【专题】伟人赵一曼：宜宾女儿的家国情怀</td>
+                                <td class="border-2 border-gray-800 p-2 text-[10px] space-x-1">
+                                    <span class="bg-gray-200 px-1 inline-flex items-center group">
+                                        <span class="cursor-pointer hover:underline" onclick="manageTag('edit', '新闻资讯')">新闻资讯</span>
+                                        <button class="ml-1 text-gray-400 hover:text-red-600" onclick="manageTag('delete', '新闻资讯')">×</button>
+                                    </span>
+                                    <span class="bg-gray-200 px-1 inline-flex items-center group">
+                                        <span class="cursor-pointer hover:underline" onclick="manageTag('edit', '伟人故里')">伟人故里</span>
+                                        <button class="ml-1 text-gray-400 hover:text-red-600" onclick="manageTag('delete', '伟人故里')">×</button>
+                                    </span>
+                                    <button class="border border-dashed border-gray-400 px-1 text-gray-500 hover:bg-gray-100" onclick="manageTag('add')">+</button>
+                                </td>
+                                <td class="border-2 border-gray-800 p-2 text-xs text-orange-600">提取中...</td>
+                                <td class="border-2 border-gray-800 p-2 text-xs">
+                                    <button onclick="showRawDocPreview('伟人赵一曼专题')" class="text-blue-600 underline">查看原文</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 原文预览子页面 -->
+                    <div id="raw-kb-preview" class="hidden mt-8 lo-fi p-6 bg-white">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold">原文预览: <span id="preview-doc-name"></span></h3>
+                            <button onclick="hideRawKbSubScreens()" class="lo-fi-btn text-xs">返回列表</button>
+                        </div>
+                        <div class="flex space-x-6">
+                            <!-- 模拟文档内容 -->
+                            <div class="flex-1 lo-fi p-8 bg-gray-50 h-[500px] overflow-y-auto text-sm leading-relaxed">
+                                <div class="text-center font-bold text-lg mb-8 underline">[ 内部历史研究档案 - 密级: 公开 ]</div>
+                                <p class="mb-4">1935年5月24日，红一方面军先头部队在石棉县安顺场强渡大渡河成功后，面对汹涌的大渡河水和两岸陡峭的山岭，毛泽东、朱德等中央领导决定采取“两路并进，夺取泸定桥”的方略...</p>
+                                <p class="mb-4">红四团在团长黄开湘、政委杨成武率领下，冒着倾盆大雨，在崎岖陡峭的山路上昼夜兼程。他们饿了抓一把生米吃，困了就用绳子拴在腰间拉着走，终于在29日凌晨赶到了泸定桥西岸...</p>
+                                <p class="mb-4">22名突击队员在刘金山、廖大珠等人的带领下，在猛烈的炮火掩护下，冒着枪林弹雨，攀踏着铁索，向东桥头冲锋...</p>
+                                <div class="text-center mt-20 text-gray-400">--- 第 1 页 / 共 48 页 ---</div>
+                            </div>
+                            <!-- 侧边提取结果预览 -->
+                            <div class="w-64 space-y-4">
+                                <h4 class="font-bold text-xs border-b border-gray-800 pb-1">AI 结构化预览</h4>
+                                <div class="space-y-2">
+                                    <div class="text-[10px] text-gray-500">已提取要素:</div>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="bg-red-100 px-1 text-[10px]">人: 黄开湘</span>
+                                        <span class="bg-red-100 px-1 text-[10px]">人: 杨成武</span>
+                                        <span class="bg-blue-100 px-1 text-[10px]">地: 泸定桥</span>
+                                        <span class="bg-green-100 px-1 text-[10px]">事: 昼夜兼程</span>
+                                        <span class="bg-orange-100 px-1 text-[10px]">物: 13根铁索</span>
+                                    </div>
+                                </div>
+                                <button class="w-full lo-fi-btn text-xs bg-black text-white py-2">同步至 5 要素库</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI 重新解析子页面 -->
+                    <div id="raw-kb-reparse" class="hidden mt-8 lo-fi p-6 bg-white text-center">
+                        <div class="flex justify-between items-center mb-12">
+                            <h3 class="text-xl font-bold">AI 智能解析引擎</h3>
+                            <button onclick="hideRawKbSubScreens()" class="lo-fi-btn text-xs">取消解析</button>
+                        </div>
+                        
+                        <div id="reparse-progress-container" class="max-w-xl mx-auto space-y-8 py-12">
+                            <div class="text-lg font-bold" id="reparse-status">正在启动深度学习模型...</div>
+                            <div class="w-full h-8 lo-fi overflow-hidden bg-gray-100 relative">
+                                <div id="reparse-bar" class="h-full bg-red-600 w-0 transition-all duration-500"></div>
+                            </div>
+                            <div class="grid grid-cols-3 text-[10px] text-gray-400">
+                                <div>OCR 文本扫描</div>
+                                <div>NLP 语义理解</div>
+                                <div>5 要素图谱匹配</div>
+                            </div>
+                        </div>
+
+                        <!-- 解析结果确认 (初始隐藏) -->
+                        <div id="reparse-result" class="hidden max-w-2xl mx-auto lo-fi p-4 bg-green-50 text-left">
+                            <h4 class="font-bold text-green-800 mb-4 flex items-center">
+                                <span class="text-xl mr-2">✅</span> 解析完成！发现 2 个新要素：
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4 text-xs">
+                                <div class="p-2 bg-white lo-fi">
+                                    <div class="text-gray-400 mb-1">原提取结果</div>
+                                    <div class="line-through">事: 飞夺泸定桥</div>
+                                </div>
+                                <div class="p-2 bg-white lo-fi border-green-500">
+                                    <div class="text-green-600 mb-1">新提取结果 (更精准)</div>
+                                    <div class="font-bold text-red-600">事: 二十二勇士飞夺泸定桥</div>
+                                    <div class="font-bold text-red-600 text-[10px]">+ 时: 1935年5月29日凌晨</div>
+                                </div>
+                            </div>
+                            <button onclick="hideRawKbSubScreens()" class="w-full mt-6 lo-fi-btn bg-black text-white py-2">确认并同步</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 知识图谱编辑器 -->
                 <div id="menu-graph" class="backend-screen">
                     <h2 class="text-2xl font-bold mb-8">知识图谱可视化编辑器</h2>
@@ -915,6 +1058,81 @@
         </div>
     </div>
 
+    <!-- ================= 运营后台 全局弹窗 ================= -->
+    <!-- 选取已有资源弹窗 -->
+    <div id="modal-existing-resource" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="w-[800px] max-h-[600px] bg-white lo-fi p-6 flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">选取四川观察媒体库资源</h3>
+                <button onclick="hideModals()" class="text-2xl font-bold">×</button>
+            </div>
+            
+            <!-- 分类切换 -->
+            <div class="flex space-x-2 mb-6 border-b-2 border-gray-800 pb-2 overflow-x-auto">
+                <button onclick="switchResourceTab('news')" id="tab-res-news" class="lo-fi-btn active-menu text-xs">新闻 (54)</button>
+                <button onclick="switchResourceTab('video')" id="tab-res-video" class="lo-fi-btn text-xs">短视频 (120)</button>
+                <button onclick="switchResourceTab('variety')" id="tab-res-variety" class="lo-fi-btn text-xs">综艺 (12)</button>
+                <button onclick="switchResourceTab('docu')" id="tab-res-docu" class="lo-fi-btn text-xs">纪录片 (8)</button>
+                <button onclick="switchResourceTab('activity')" id="tab-res-activity" class="lo-fi-btn text-xs">活动 (15)</button>
+            </div>
+
+            <!-- 搜索与列表 -->
+            <div class="flex-1 overflow-y-auto">
+                <div class="flex mb-4">
+                    <input type="text" placeholder="在媒体库中搜索..." class="flex-1 lo-fi-input text-xs">
+                    <button class="lo-fi-btn bg-black text-white ml-2 text-xs">搜索</button>
+                </div>
+                
+                <div id="resource-list" class="space-y-2">
+                    <!-- 动态加载资源项 -->
+                    <div class="flex items-center p-3 border-2 border-gray-100 hover:border-gray-800 cursor-pointer group">
+                        <div class="w-16 h-12 bg-gray-200 lo-fi mr-4 flex-shrink-0 flex items-center justify-center text-[10px] text-gray-400">封面图</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-bold group-hover:text-blue-600">【新闻】长征在四川：泸定桥的胜利及其历史意义</div>
+                            <div class="text-[10px] text-gray-500">2026-03-20 · 时政频道</div>
+                        </div>
+                        <button class="lo-fi-btn text-xs bg-red-100">+ 选取</button>
+                    </div>
+                    <!-- 更多示例... -->
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="hideModals()" class="lo-fi-btn bg-black text-white px-8 py-2">完成选取</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导入本地文档弹窗 -->
+    <div id="modal-import-doc" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
+        <div class="w-[500px] bg-white lo-fi p-8 text-center">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-bold">导入本地文档</h3>
+                <button onclick="hideModals()" class="text-2xl font-bold">×</button>
+            </div>
+            
+            <div class="border-4 border-dashed border-gray-300 p-12 rounded-lg bg-gray-50 mb-6 cursor-pointer hover:bg-gray-100">
+                <div class="text-4xl mb-4 text-gray-400">📄</div>
+                <div class="text-sm font-bold mb-2">点击或拖拽文件到此处上传</div>
+                <div class="text-[10px] text-gray-400">支持 .pdf, .doc, .docx (单文件最大 50MB)</div>
+            </div>
+            
+            <div class="space-y-4 text-left mb-8">
+                <div class="text-xs font-bold mb-2">自动执行策略:</div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" checked id="auto-ocr">
+                    <label for="auto-ocr" class="text-[10px]">自动执行 OCR 文本识别</label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" checked id="auto-extract">
+                    <label for="auto-extract" class="text-[10px]">自动提取 5 要素知识点</label>
+                </div>
+            </div>
+
+            <button onclick="simulateUpload()" id="btn-start-upload" class="w-full lo-fi-btn bg-black text-white py-3 font-bold">开始导入</button>
+        </div>
+    </div>
+
     <script>
         function switchView(view) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -931,17 +1149,146 @@
 
             // 切换按钮状态 - 仅针对侧边栏按钮，避免影响内容区按钮
             document.querySelectorAll('.view#backend-view .w-64 .lo-fi-btn').forEach(b => b.classList.remove('active-menu'));
-            document.getElementById('btn-' + menuId).classList.add('active-menu');
+            const sideBtn = document.getElementById('btn-' + menuId);
+            if (sideBtn) sideBtn.classList.add('active-menu');
+
+            // 特殊处理：进入不同主菜单时，隐藏所有子屏幕
+            hideRawKbSubScreens();
 
             // 特殊处理：如果是知识库管理，确保子菜单状态正确
             if (menuId === 'menu-kb') {
-                // 默认进入实体库，不触发 switchKbSubMenu 以免逻辑复杂，直接确保 HTML 初始状态
+                // 默认进入实体库
             }
 
             // 特殊处理：如果是打卡活动管理，默认显示列表页
             if (menuId === 'menu-mission') {
                 hideMissionForm();
             }
+        }
+
+        function showRawDocPreview(name) {
+            document.getElementById('raw-kb-preview').classList.remove('hidden');
+            document.getElementById('preview-doc-name').innerText = name;
+            // 滚动到该位置
+            document.getElementById('raw-kb-preview').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showReparseAnim(name) {
+            const screen = document.getElementById('raw-kb-reparse');
+            const bar = document.getElementById('reparse-bar');
+            const status = document.getElementById('reparse-status');
+            const progress = document.getElementById('reparse-progress-container');
+            const result = document.getElementById('reparse-result');
+
+            screen.classList.remove('hidden');
+            progress.classList.remove('hidden');
+            result.classList.add('hidden');
+            bar.style.width = '0%';
+            status.innerText = '正在启动深度学习模型...';
+
+            let p = 0;
+            const interval = setInterval(() => {
+                p += 5;
+                bar.style.width = p + '%';
+                if (p === 30) status.innerText = 'OCR 全文特征扫描中...';
+                if (p === 60) status.innerText = '语义理解与实体关系识别...';
+                if (p === 90) status.innerText = '正在校对巴蜀红色大脑知识图谱...';
+                
+                if (p >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progress.classList.add('hidden');
+                        result.classList.remove('hidden');
+                    }, 500);
+                }
+            }, 100);
+
+            screen.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideRawKbSubScreens() {
+            const preview = document.getElementById('raw-kb-preview');
+            const reparse = document.getElementById('raw-kb-reparse');
+            if (preview) preview.classList.add('hidden');
+            if (reparse) reparse.classList.add('hidden');
+        }
+
+        // --- 运营后台 弹窗逻辑 ---
+        function showImportDocModal() {
+            document.getElementById('modal-import-doc').classList.remove('hidden');
+        }
+
+        function showExistingResourceModal() {
+            document.getElementById('modal-existing-resource').classList.remove('hidden');
+            switchResourceTab('news'); // 默认进入新闻页
+        }
+
+        function hideModals() {
+            document.getElementById('modal-import-doc').classList.add('hidden');
+            document.getElementById('modal-existing-resource').classList.add('hidden');
+        }
+
+        function switchResourceTab(type) {
+            // 切换按钮状态
+            const tabs = ['news', 'video', 'variety', 'docu', 'activity'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-res-' + t);
+                if (t === type) btn.classList.add('active-menu');
+                else btn.classList.remove('active-menu');
+            });
+
+            // 模拟数据加载
+            const list = document.getElementById('resource-list');
+            const data = {
+                news: [
+                    { t: '新闻', title: '【深度】四川红军长征遗址现状调查', date: '2026-04-01' },
+                    { t: '新闻', title: '全省红色资源普查工作全面启动', date: '2026-03-25' }
+                ],
+                video: [
+                    { t: '视频', title: '航拍：震撼！大渡河上的泸定桥', date: '2026-04-05' },
+                    { t: '视频', title: '红军餐：草鞋背后的革命记忆', date: '2026-03-10' }
+                ],
+                variety: [
+                    { t: '综艺', title: '《四川观察：红星照耀巴蜀》第三季', date: '2026-02-15' }
+                ],
+                docu: [
+                    { t: '纪录片', title: '大型纪录片：长征在四川 (全12集)', date: '2025-12-01' }
+                ],
+                activity: [
+                    { t: '活动', title: '“重走长征路”全省骑行接力赛', date: '2026-05-01 (预热)' }
+                ]
+            };
+
+            list.innerHTML = data[type].map(item => `
+                <div class="flex items-center p-3 border-2 border-gray-100 hover:border-gray-800 cursor-pointer group">
+                    <div class="w-16 h-12 bg-gray-200 lo-fi mr-4 flex-shrink-0 flex items-center justify-center text-[10px] text-gray-400">封面图</div>
+                    <div class="flex-1">
+                        <div class="text-sm font-bold group-hover:text-blue-600">【${item.t}】${item.title}</div>
+                        <div class="text-[10px] text-gray-500">${item.date} · 四川观察</div>
+                    </div>
+                    <button onclick="alert('已加入导入队列')" class="lo-fi-btn text-xs bg-red-100">+ 选取</button>
+                </div>
+            `).join('');
+        }
+
+        function simulateUpload() {
+            const btn = document.getElementById('btn-start-upload');
+            btn.innerText = '正在上传 20%...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerText = '正在 AI 解析 65%...';
+                setTimeout(() => {
+                    btn.innerText = '导入成功！';
+                    btn.classList.replace('bg-black', 'bg-green-600');
+                    setTimeout(() => {
+                        hideModals();
+                        btn.innerText = '开始导入';
+                        btn.disabled = false;
+                        btn.classList.replace('bg-green-600', 'bg-black');
+                    }, 1000);
+                }, 1000);
+            }, 800);
         }
 
         function showMissionForm(name) {
@@ -1013,6 +1360,20 @@
             }
         }
 
+        function manageTag(mode, tagName) {
+            if (mode === 'add') {
+                const newTag = prompt('请输入新标签名称:');
+                if (newTag) alert(`标签 "${newTag}" 已添加 (演示)`);
+            } else if (mode === 'edit') {
+                const updatedTag = prompt(`正在编辑标签 "${tagName}"，请输入新名称:`, tagName);
+                if (updatedTag && updatedTag !== tagName) alert(`标签已从 "${tagName}" 修改为 "${updatedTag}" (演示)`);
+            } else if (mode === 'delete') {
+                if (confirm(`确定要删除标签 "${tagName}" 吗？`)) {
+                    alert(`标签 "${tagName}" 已删除 (演示)`);
+                }
+            }
+        }
+
         function openAgent() {
             document.getElementById('agent-overlay').classList.remove('hidden');
         }
@@ -1058,10 +1419,20 @@
             
             // 如果未获得，调整样式
             const iconDiv = document.getElementById('detail-medal-icon');
+            const actionButton = document.getElementById('detail-action-button');
+
             if (date === '尚未获得') {
                 iconDiv.classList.add('grayscale', 'opacity-50');
+                actionButton.innerText = '立即参加活动';
+                actionButton.onclick = () => gotoScreen('screen-map'); // 模拟跳转到活动地图页
+                actionButton.classList.remove('bg-red-600');
+                actionButton.classList.add('bg-blue-600'); // 未获得时按钮颜色区分
             } else {
                 iconDiv.classList.remove('grayscale', 'opacity-50');
+                actionButton.innerText = '炫耀一下 (分享海报)';
+                actionButton.onclick = () => alert('分享海报功能待实现'); // 模拟分享功能
+                actionButton.classList.remove('bg-blue-600');
+                actionButton.classList.add('bg-red-600');
             }
             
             gotoScreen('screen-medal-detail');
